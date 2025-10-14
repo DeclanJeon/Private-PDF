@@ -34,15 +34,15 @@ export function WatermarkSettings({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Droplet className="w-5 h-5" />
-          워터마크 설정
+          Watermark Settings
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <Label>워터마크 추가</Label>
+            <Label>Add Watermark</Label>
             <p className="text-sm text-muted-foreground">
-              PDF에 워터마크를 추가하여 문서 보안을 강화합니다
+              Add a watermark to the PDF to enhance document security
             </p>
           </div>
           <Switch
@@ -54,18 +54,18 @@ export function WatermarkSettings({
         {enabled && (
           <div className="space-y-3">
             <div>
-              <Label htmlFor="watermark-text">워터마크 텍스트</Label>
+              <Label htmlFor="watermark-text">Watermark Text</Label>
               <Input
                 id="watermark-text"
                 value={text}
                 onChange={(e) => onTextChange(e.target.value)}
-                placeholder="워터마크 텍스트를 입력하세요"
+                placeholder="Enter watermark text"
                 className="mt-1"
               />
             </div>
 
             <div>
-              <Label className="text-sm font-medium">미리 설정된 텍스트</Label>
+              <Label className="text-sm font-medium">Predefined Text</Label>
               <div className="flex flex-wrap gap-2 mt-2">
                 {watermarkPresets.map((preset) => (
                   <Badge
@@ -81,12 +81,12 @@ export function WatermarkSettings({
             </div>
 
             <div className="text-xs text-muted-foreground bg-blue-50 dark:bg-blue-950 p-3 rounded">
-              <p className="font-medium mb-1">워터마크 특징:</p>
+              <p className="font-medium mb-1">Watermark Features:</p>
               <ul className="space-y-1">
-                <li>• 45도 각도로 기울어져 표시됩니다</li>
-                <li>• 반투명 흰색으로 표시됩니다</li>
-                <li>• 모든 페이지에 동일하게 적용됩니다</li>
-                <li>• 문서 복사 시에도 유지됩니다</li>
+                <li>• Displayed at a 45-degree angle</li>
+                <li>• Displayed in semi-transparent white</li>
+                <li>• Applied identically to all pages</li>
+                <li>• Maintained when copying the document</li>
               </ul>
             </div>
           </div>

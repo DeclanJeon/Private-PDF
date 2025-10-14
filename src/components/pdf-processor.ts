@@ -27,9 +27,9 @@ export class PDFProcessor {
    * PDF.js 초기화
    */
   async initializePDFJS(): Promise<void> {
-    // 브라우저 환경 체크
+    // Browser environment check
     if (typeof window === 'undefined') {
-      throw new Error('PDF 처리는 브라우저 환경에서만 가능합니다.')
+      throw new Error('PDF processing is only possible in a browser environment.')
     }
 
     // 이미 초기화되었으면 스킵
@@ -56,7 +56,7 @@ export class PDFProcessor {
       
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
-          reject(new Error('PDF.js 로딩 시간 초과 (10초)'))
+          reject(new Error('PDF.js loading timeout (10 seconds)'))
         }, 10000)
 
         script.onload = () => {
@@ -66,7 +66,7 @@ export class PDFProcessor {
         
         script.onerror = () => {
           clearTimeout(timeout)
-          reject(new Error('PDF.js 스크립트 로딩 실패'))
+          reject(new Error('PDF.js script loading failed'))
         }
         
         document.head.appendChild(script)
@@ -82,7 +82,7 @@ export class PDFProcessor {
       }
 
       if (!window.pdfjsLib) {
-        throw new Error('PDF.js 라이브러리를 로드할 수 없습니다.')
+        throw new Error('Cannot load PDF.js library.')
       }
 
       this.pdfjsLib = window.pdfjsLib
@@ -90,11 +90,11 @@ export class PDFProcessor {
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
       
       this.isInitialized = true
-      console.log('PDF.js 초기화 완료')
+      console.log('PDF.js initialization completed')
       
     } catch (error: any) {
-      console.error('PDF.js 초기화 실패:', error)
-      throw new Error(`PDF.js 초기화 실패: ${error.message}`)
+      console.error('PDF.js initialization failed:', error)
+      throw new Error(`PDF.js initialization failed: ${error.message}`)
     }
   }
 
@@ -129,7 +129,7 @@ export class PDFProcessor {
           const page = await this.pdfDoc.getPage(i)
           this.pages.push(page)
         } catch (pageError) {
-          console.warn(`페이지 ${i} 로드 실패:`, pageError)
+          console.warn(`Failed to load page ${i}:`, pageError)
         }
       }
 
@@ -147,20 +147,20 @@ export class PDFProcessor {
         error.message?.includes('encrypted') ||
         error.message?.includes('암호화')
       ) {
-        throw new Error('이 PDF는 비밀번호로 보호되어 있습니다. PDF 파일의 비밀번호를 먼저 제거한 후 다시 업로드해주세요.')
+        throw new Error('This PDF is password protected. Please remove the password from the PDF file before uploading again.')
       }
       
       if (error.message?.includes('Invalid PDF')) {
-        throw new Error('유효하지 않은 PDF 파일입니다.')
+        throw new Error('Invalid PDF file.')
       }
       
-      throw new Error(`PDF 파일을 로드할 수 없습니다: ${error.message}`)
+      throw new Error(`Cannot load PDF file: ${error.message}`)
     }
   }
 
   async prepareForRendering(): Promise<void> {
     if (!this.pages.length) {
-      throw new Error('PDF가 로드되지 않았습니다.')
+      throw new Error('PDF was not loaded.')
     }
 
     this.renderPages = []
@@ -187,7 +187,7 @@ export class PDFProcessor {
         this.renderPages.push(canvas)
         
       } catch (renderError) {
-        console.warn(`페이지 ${i + 1} 렌더링 실패:`, renderError)
+        console.warn(`Failed to render page ${i + 1}:`, renderError)
         
         // 에러 페이지 생성
         const canvas = document.createElement('canvas')
@@ -199,7 +199,7 @@ export class PDFProcessor {
         context.fillStyle = '#666'
         context.font = '16px Arial'
         context.textAlign = 'center'
-        context.fillText(`페이지 ${i + 1} 렌더링 실패`, canvas.width / 2, canvas.height / 2)
+        context.fillText(`Failed to render page ${i + 1}`, canvas.width / 2, canvas.height / 2)
         this.renderPages.push(canvas)
       }
     }
@@ -283,7 +283,7 @@ export class PDFProcessor {
 
   async exportPDF(options: ExportOptions = {}): Promise<Blob> {
     if (!this.pdfLibDoc) {
-      throw new Error('PDF가 로드되지 않았습니다.')
+      throw new Error('PDF was not loaded.')
     }
 
     try {
@@ -335,7 +335,7 @@ export class PDFProcessor {
             })
           }
         } catch (error) {
-          console.warn('워터마크 추가 실패:', error)
+          console.warn('Failed to add watermark:', error)
         }
       }
 
@@ -351,8 +351,8 @@ export class PDFProcessor {
       return new Blob([pdfBytes], { type: 'application/pdf' })
 
     } catch (error: any) {
-      console.error('PDF 내보내기 실패:', error)
-      throw new Error(`PDF를 내보낼 수 없습니다: ${error.message}`)
+      console.error('PDF export failed:', error)
+      throw new Error(`Cannot export PDF: ${error.message}`)
     }
   }
 }

@@ -89,13 +89,13 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
     const handleSize = 10
     const threshold = handleSize / scale
 
-    // 모서리 핸들
+    // Corner handle
     if (Math.abs(x - area.x) < threshold && Math.abs(y - area.y) < threshold) return 'nw'
     if (Math.abs(x - (area.x + area.width)) < threshold && Math.abs(y - area.y) < threshold) return 'ne'
     if (Math.abs(x - area.x) < threshold && Math.abs(y - (area.y + area.height)) < threshold) return 'sw'
     if (Math.abs(x - (area.x + area.width)) < threshold && Math.abs(y - (area.y + area.height)) < threshold) return 'se'
 
-    // 엣지 핸들
+    // Edge handle
     if (Math.abs(y - area.y) < threshold && x > area.x && x < area.x + area.width) return 'n'
     if (Math.abs(y - (area.y + area.height)) < threshold && x > area.x && x < area.x + area.width) return 's'
     if (Math.abs(x - area.x) < threshold && y > area.y && y < area.y + area.height) return 'w'
@@ -141,10 +141,10 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
     ctx.scale(scale, scale)
     ctx.drawImage(originalCanvas, 0, 0)
 
-    // 마스킹된 페이지인 경우 이미지화 (텍스트 선택 방지)
+    // If it's a masked page, convert to image (to prevent text selection)
     const hasMasking = processor.hasPageMasking(currentPage)
     if (hasMasking) {
-      // 캔버스를 이미지로 변환하여 다시 그림 (텍스트 레이어 제거)
+      // Convert canvas to image and redraw (remove text layer)
       const imageData = ctx.getImageData(0, 0, originalCanvas.width, originalCanvas.height)
       ctx.putImageData(imageData, 0, 0)
     }
@@ -163,17 +163,17 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
           ctx.lineWidth = 3
           ctx.strokeRect(area.x, area.y, area.width, area.height)
 
-          // 리사이즈 핸들 표시
+          // Show resize handles
           const handleSize = 8
           ctx.fillStyle = 'rgba(59, 130, 246, 1)'
           
-          // 모서리 핸들
+          // Corner handles
           ctx.fillRect(area.x - handleSize/2, area.y - handleSize/2, handleSize, handleSize)
           ctx.fillRect(area.x + area.width - handleSize/2, area.y - handleSize/2, handleSize, handleSize)
           ctx.fillRect(area.x - handleSize/2, area.y + area.height - handleSize/2, handleSize, handleSize)
           ctx.fillRect(area.x + area.width - handleSize/2, area.y + area.height - handleSize/2, handleSize, handleSize)
           
-          // 엣지 핸들
+          // Edge handles
           ctx.fillRect(area.x + area.width/2 - handleSize/2, area.y - handleSize/2, handleSize, handleSize)
           ctx.fillRect(area.x + area.width/2 - handleSize/2, area.y + area.height - handleSize/2, handleSize, handleSize)
           ctx.fillRect(area.x - handleSize/2, area.y + area.height/2 - handleSize/2, handleSize, handleSize)
@@ -196,7 +196,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
     const x = (e.clientX - rect.left) / scale
     const y = (e.clientY - rect.top) / scale
 
-    // 선택된 마스킹 영역의 리사이즈 핸들 확인
+    // Check resize handles of selected masking area
     if (selectedMaskId) {
       const selectedArea = processor.getMaskAreaById(selectedMaskId)
       if (selectedArea && selectedArea.page === currentPage) {
@@ -210,7 +210,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
       }
     }
 
-    // 마스킹 영역 클릭 확인
+    // Check if masking area is clicked
     const clickedMask = maskAreas
       .filter(area => area.page === currentPage)
       .reverse()
@@ -246,7 +246,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
     const x = (e.clientX - rect.left) / scale
     const y = (e.clientY - rect.top) / scale
 
-    // 리사이즈 중
+    // Resizing
     if (isResizing && selectedMaskId && resizeStart && resizeHandle) {
       const dx = x - resizeStart.x
       const dy = y - resizeStart.y
@@ -299,7 +299,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
       return
     }
 
-    // 마스킹 영역 드래그
+    // Drag masking area
     if (isDraggingMask && selectedMaskId && maskDragStart) {
       const newX = x - maskDragStart.x
       const newY = y - maskDragStart.y
@@ -308,7 +308,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
       return
     }
 
-    // 캔버스 드래그
+    // Drag canvas
     if (isDraggingMode && dragStart) {
       setCanvasOffset({
         x: e.clientX - dragStart.x,
@@ -317,13 +317,13 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
       return
     }
 
-    // 새 마스킹 영역 선택
+    // Select new masking area
     if (isSelecting && selectionStart) {
       setSelectionEnd({ x, y })
       return
     }
 
-    // 커서 스타일 업데이트 (호버 시)
+    // Update cursor style (on hover)
     if (selectedMaskId && !isDraggingMask && !isResizing) {
       const selectedArea = processor.getMaskAreaById(selectedMaskId)
       if (selectedArea && selectedArea.page === currentPage) {
@@ -418,8 +418,8 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
       
       onProcessed(blob)
     } catch (error: any) {
-      console.error('PDF 내보내기 오류:', error)
-      alert('PDF 내보내기 중 오류가 발생했습니다: ' + error.message)
+      console.error('PDF export error:', error)
+      alert('An error occurred while exporting the PDF: ' + error.message)
     }
   }
 
@@ -492,7 +492,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
             }}
           >
             <Square className="w-4 h-4 mr-2" />
-            영역 선택
+            Area Selection
           </Button>
           
           <Button
@@ -504,7 +504,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
             }}
           >
             <Move className="w-4 h-4 mr-2" />
-            화면 이동
+            Screen Movement
           </Button>
 
           <Button
@@ -514,7 +514,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
             disabled={!selectedMaskId}
           >
             <Trash2 className="w-4 h-4 mr-2" />
-            선택 삭제
+            Delete Selection
           </Button>
 
           <Button
@@ -524,7 +524,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
             disabled={maskAreas.length === 0}
           >
             <RefreshCw className="w-4 h-4 mr-2" />
-            전체 초기화
+            Full Reset
           </Button>
         </div>
 
@@ -549,16 +549,16 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span>PDF 뷰어 - 페이지 {currentPage + 1} / {totalPages}</span>
+              <span>PDF Viewer - Page {currentPage + 1} / {totalPages}</span>
               {hasMasking && (
                 <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                  텍스트 선택 불가 (마스킹됨)
+                  Text selection disabled (masked)
                 </span>
               )}
             </div>
             {/* <Button onClick={exportPDF} size="sm">
               <Download className="w-4 h-4 mr-2" />
-              다운로드
+              Download
             </Button> */}
           </CardTitle>
         </CardHeader>
@@ -624,8 +624,8 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
               onClick={prevPage}
               disabled={currentPage === 0}
             >
-              이전
-            </Button>
+            Previous
+          </Button>
             <span className="text-sm font-medium px-3 py-1">
               {currentPage + 1} / {totalPages}
             </span>
@@ -635,8 +635,8 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
               onClick={nextPage}
               disabled={currentPage === totalPages - 1}
             >
-              다음
-            </Button>
+            Next
+          </Button>
           </div>
         </CardContent>
       </Card>
@@ -647,7 +647,7 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Maximize2 className="w-4 h-4" />
-              현재 페이지 마스킹 영역 ({currentPageMasks.length}개)
+              Current Page Masking Areas ({currentPageMasks.length} items)
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -665,11 +665,11 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
                   >
                     <div className="flex-1">
                       <span className="text-sm font-medium">
-                        영역 {currentPageMasks.indexOf(area) + 1}
+                        Area {currentPageMasks.indexOf(area) + 1}
                       </span>
                       <div className="text-xs text-gray-500">
-                        위치: ({Math.round(area.x)}, {Math.round(area.y)}) 
-                        크기: {Math.round(area.width)}×{Math.round(area.height)}
+                        Position: ({Math.round(area.x)}, {Math.round(area.y)})
+                        Size: {Math.round(area.width)}×{Math.round(area.height)}
                       </div>
                     </div>
                     <Button
@@ -699,14 +699,14 @@ export function PDFViewer({ processor, onProcessed }: PDFViewerProps) {
       <Card className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
         <CardContent className="pt-6">
           <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-            💡 사용 방법
+            💡 Usage Guide
           </h4>
           <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-            <li>• <strong>영역 선택:</strong> 드래그하여 새 마스킹 영역 생성</li>
-            <li>• <strong>영역 이동:</strong> 마스킹 영역 클릭 후 드래그</li>
-            <li>• <strong>크기 조절:</strong> 선택된 영역의 모서리/엣지 핸들 드래그</li>
-            <li>• <strong>삭제:</strong> 영역 선택 후 "선택 삭제" 버튼 또는 목록에서 삭제</li>
-            <li>• <strong>텍스트 선택 방지:</strong> 마스킹된 페이지는 자동으로 이미지화됨</li>
+            <li>• <strong>Area Selection:</strong> Drag to create a new masking area</li>
+            <li>• <strong>Move Area:</strong> Click and drag the masking area</li>
+            <li>• <strong>Resize:</strong> Drag the corner/edge handles of the selected area</li>
+            <li>• <strong>Delete:</strong> Select area and click "Delete Selection" button or delete from the list</li>
+            <li>• <strong>Prevent Text Selection:</strong> Masked pages are automatically converted to images</li>
           </ul>
         </CardContent>
       </Card>
