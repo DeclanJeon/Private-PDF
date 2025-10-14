@@ -87,7 +87,7 @@ npm run build
 npm start
 ```
 
-서버가 시작되면 [http://localhost:3000](http://localhost:3000)에서 애플리케이션을 사용할 수 있습니다.
+서버가 시작되면 [http://localhost:3100](http://localhost:3100)에서 애플리케이션을 사용할 수 있습니다.
 
 ## 📋 사용 방법
 

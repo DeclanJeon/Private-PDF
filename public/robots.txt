@@ -1,14 +1,33 @@
+# PrivacyPDF - Robots Configuration
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/static/
+
+# Sitemap
+Sitemap: https://ppdf.ponslink.online/sitemap.xml
+
+# Search Engine Specific
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 0
 
-User-agent: Twitterbot
+User-agent: Slurp
 Allow: /
+Crawl-delay: 1
 
-User-agent: facebookexternalhit
+User-agent: DuckDuckBot
 Allow: /
+Crawl-delay: 0
 
-User-agent: *
+User-agent: Baiduspider
 Allow: /
+Crawl-delay: 1
+
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
