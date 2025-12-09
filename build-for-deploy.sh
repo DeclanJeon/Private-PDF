@@ -15,10 +15,6 @@ fi
 echo "📦 의존성 설치..."
 npm ci
 
-# 3. Prisma 클라이언트 생성
-echo "🗄️ Prisma 클라이언트 생성..."
-npx prisma generate
-
 # 4. Next.js 빌드
 echo "⚡ Next.js 빌드..."
 npm run build
@@ -59,7 +55,7 @@ cat > deploy-package/.env << 'EOF'
 DATABASE_URL="file:./db/custom.db"
 NODE_ENV=production
 PORT=3100
-HOSTNAME=0.0.0.0
+HOSTNAME=localhost
 EOF
 
 echo "✅ 빌드 완료!"

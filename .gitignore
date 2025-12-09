@@ -52,3 +52,6 @@ deploy.sh
 deploy-package
 deploy-package.tar.gz
 build-for-deploy
+build-for-deploy.*
+
+ecosystem.config.*
